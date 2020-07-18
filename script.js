@@ -1,12 +1,17 @@
 var citySearch = document.getElementById("citySearch"),
-    searchBtn = document.getElementById("searchBtn"),
-    date = moment().format("M" + "/" + "D" + "/" + "YYYY");
+    searchHistory = [],
+    today = moment().format("M" + "/" + "D" + "/" + "YYYY"),
+    APIKey = "a908941a600765cd93c1943bfd3be4b7",
+    city;
 
+function searchWeather(city) {
 
-function searchWeather() {
+    $("#day0").empty();
+    $("#day1").empty();
+    $("#day2").empty();
+    $("#day3").empty();
+    $("#day4").empty();
 
-    var APIKey = "a908941a600765cd93c1943bfd3be4b7";
-    var city = citySearch.value;
     var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
     $.ajax({
@@ -18,14 +23,10 @@ function searchWeather() {
         var lon = parseFloat(response.coord.lon);
         var cityID = response.id;
 
-        var newCity = $("<div>").addClass("cities").text(city);
-        $("#cityStorage").append(newCity);
-
         var weatherImg = 'https://openweathermap.org/img/wn/' + response.weather[0].icon + '.png';
-        $("#city").html(city + " (" + date + ") " + "<img src=" + weatherImg + "> </img>");
+        $("#city").html(city + " (" + today + ") " + "<img src=" + weatherImg + "> </img>");
 
-        var temp = parseFloat(response.main.temp);
-        temp = parseFloat(((temp - 273.15) * 1.8 + 32)).toFixed(1);
+        var temp = parseFloat(((response.main.temp) - 273.15) * 1.8 + 32).toFixed(1);
         $("#temp").html("Current Temperature: " + temp + "<span>&deg</span> F");
 
         var humidity = parseInt(response.main.humidity);
@@ -40,25 +41,25 @@ function searchWeather() {
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-            var uvIndex = response[0].value;
-            if (uvIndex <= 3) {
-                var uvIndexSpan = $("<span>").attr("id", "uvIndexLow").addClass("box").html(uvIndex);
+
+            if (response[0].value <= 3) {
+                var uvIndexSpan = $("<span>").attr("id", "uvIndexLow").addClass("box").html(reponse[0].value);
                 $("#uvIndex").html("Current UV Index: ").append(uvIndexSpan);
             }
-            else if (uvIndex > 3 && uvIndex <= 6) {
-                var uvIndexSpan = $("<span>").attr("id", "uvIndexModerate").addClass("box").html(uvIndex);
+            else if (response[0].value > 3 && response[0].value <= 6) {
+                var uvIndexSpan = $("<span>").attr("id", "uvIndexModerate").addClass("box").html(response[0].value);
                 $("#uvIndex").html("Current UV Index: ").append(uvIndexSpan);
             }
-            else if (uvIndex > 6 && uvIndex <= 8) {
-                var uvIndexSpan = $("<span>").attr("id", "uvIndexHigh").addClass("box").html(uvIndex);
+            else if (response[0].value > 6 && response[0].value <= 8) {
+                var uvIndexSpan = $("<span>").attr("id", "uvIndexHigh").addClass("box").html(response[0].value);
                 $("#uvIndex").html("Current UV Index: ").append(uvIndexSpan);
             }
-            else if (uvIndex > 8 && uvIndex <= 10) {
-                var uvIndexSpan = $("<span>").attr("id", "uvIndexVeryHigh").addClass("box").html(uvIndex);
+            else if (response[0].value > 8 && response[0].value <= 10) {
+                var uvIndexSpan = $("<span>").attr("id", "uvIndexVeryHigh").addClass("box").html(response[0].value);
                 $("#uvIndex").html("Current UV Index: ").append(uvIndexSpan);
             }
-            else if (uvIndex > 10) {
-                var uvIndexSpan = $("<span>").attr("id", "uvIndexExtreme").addClass("box").html(uvIndex);
+            else if (response[0].value > 10) {
+                var uvIndexSpan = $("<span>").attr("id", "uvIndexExtreme").addClass("box").html(response[0].value);
                 $("#uvIndex").html("Current UV Index: ").append(uvIndexSpan);
             }
         })
@@ -69,23 +70,60 @@ function searchWeather() {
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-            console.log(response);
 
-            var day1 = response.list[0];
-            var day2 = response.list[1];
-            var day3 = response.list[2];
-            var day4 = response.list[3];
-            var day5 = response.list[4];
+            $("#forecastH5").removeClass("d-none");
 
-            console.log(day1.main);
-            $("#day1")
+            for (var i = 0; i <= 4; i++) {
 
-            $("#day2")
-            $("#day3")
-            $("#day4")
-            $("#day5")
+                $("<h6>").html(moment().add(i + 1, "days").format("M" + "/" + "D" + "/" + "YYYY")).appendTo("#day" + i);
+
+                $("#day" + i).removeClass("d-none");
+                weatherImg = 'https://openweathermap.org/img/wn/' + response.list[i].weather[0].icon + '@2x.png'
+
+                $("<img>").attr("src", weatherImg).appendTo("#day" + i);
+
+                $("<p>").html("Temp: " + parseFloat(((response.list[i].main.temp) - 273.15) * 1.8 + 32).toFixed(2) + "<span>&deg</span> F").appendTo("#day" + i);
+
+                $("<p>").html("Humidity: " + parseInt(response.list[i].main.humidity) + "%").appendTo("#day" + i);
+            }
         })
     })
 }
 
-$(searchBtn).on("click", searchWeather);
+function renderBtns() {
+    for (var i = 0; i < searchHistory.length; i++) {
+        var newCityDiv = $("<div>");
+        var newCityBtn = $("<button>").addClass("cities").text(searchHistory[i]).appendTo(newCityDiv);
+        $("#cityStorage").prepend(newCityBtn);
+    }
+}
+
+function initSearch() {
+    searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    if (!searchHistory) {
+        searchHistory = [];
+    }
+    else {
+        renderBtns();
+    }
+}
+
+$("#searchBtn").on("click", function () {
+    city = citySearch.value;
+    searchHistory.push(city);
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+
+    var newCityDiv = $("<div>");
+    var newCityBtn = $("<button>").addClass("cities").text(city).appendTo(newCityDiv);
+    $("#cityStorage").prepend(newCityBtn);
+
+    searchWeather(city);
+});
+
+$(document).on("click", ".cities", function () {
+    city = $(this).html();
+
+    searchWeather(city);
+});
+
+initSearch();

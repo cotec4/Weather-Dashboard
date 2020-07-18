@@ -30,8 +30,9 @@
     background-color: white;
     color: grey;
     font-size: 18px;
-    border: #f8f9fa 1px;
-    padding: 12px 0px 0px 25px;
+    border-color: #f8f9fa;
+    text-align: left;
+    width: 200px;
     height: 50px;
 }
 
@@ -67,5 +68,13 @@
 
 #uvIndexExtreme {
     background-color: violet;
+    color: white;
+}
+
+.forecast {
+    width: 18.5%;
+    padding: 12px;
+    margin: 5px;
+    background-color: blue;
     color: white;
 }
