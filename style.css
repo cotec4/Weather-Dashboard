@@ -1,0 +1,71 @@
+#jumbotron {
+    background-color: #343a40;
+}
+
+#weatherDashboard {
+    color: white;
+    font-weight: 450;
+    text-align: center;
+}
+
+#searchLabel {
+    font-weight: bold;
+    font-size: 20px;
+    color: #343a40;
+}
+
+.leftCard {
+    background-color: #f8f9fa;
+}
+
+#searchBtn {
+    background-color: #007bff;
+}
+
+.fa-search {
+    color: white;
+}
+
+.cities {
+    background-color: white;
+    color: grey;
+    font-size: 18px;
+    border: #f8f9fa 1px;
+    padding: 12px 0px 0px 25px;
+    height: 50px;
+}
+
+#currentCity {
+    padding-left: 25px;
+}
+
+.box {
+    width: 50px;
+    height: 100%;
+    padding: 5px;
+}
+
+#uvIndexLow {
+    background-color: green;
+    color: white;
+}
+
+#uvIndexModerate {
+    background-color: yellow;
+    color: black;
+}
+
+#uvIndexHigh {
+    background-color: orange;
+    color: black;
+}
+
+#uvIndexVeryHigh {
+    background-color: red;
+    color: white;
+}
+
+#uvIndexExtreme {
+    background-color: violet;
+    color: white;
+}

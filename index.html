@@ -25,7 +25,46 @@
 </head>
 
 <body>
+    <header>
+        <div class="jumbotron jumbotron-fluid" id="jumbotron">
+            <div class="container">
+                <h1 class="display-4" id="weatherDashboard">Weather Dashboard</h1>
+            </div>
+        </div>
+    </header>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 leftCard">
+                <div class="form-group">
+                    <label for="citySearch" id="searchLabel">Search for a City:</label>
+                    <input type="text" id="citySearch">
+                    <button class="submit" id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="searchHistory">
+                    <div class="card-body" id="cityStorage">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 rightCard">
+                <div class="card" id="currentCity">
+                    <h5 class="card-title" id="city"></h5>
+                    <p id="temp"></p>
+                    <p id="humidity"></p>
+                    <p id="windSpeed"></p>
+                    <p id="uvIndex"></p>
+                </div>
+                <div></div>
+                <div id="5DayForecast">
+                    <div id="day1"></div>
+                    <div id="day2"></div>
+                    <div id="day3"></div>
+                    <div id="day4"></div>
+                    <div id="day5"></div>
+                </div >
+            </div>
+        </div>
+    </div>
 </body>
 
 <!-- Scripts -->
