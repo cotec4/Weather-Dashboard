@@ -1,19 +1,20 @@
+// Global variables
 var citySearch = document.getElementById("citySearch"),
     searchHistory = [],
     today = moment().format("M" + "/" + "D" + "/" + "YYYY"),
     APIKey = "a908941a600765cd93c1943bfd3be4b7",
     city;
 
+// Function to take an input (city) and render the entire page
 function searchWeather(city) {
 
-    $("#day0").empty();
-    $("#day1").empty();
-    $("#day2").empty();
-    $("#day3").empty();
-    $("#day4").empty();
+    for (var i = 0; i <= 4; i++) {
+        $("#day" + i).empty();
+    }
 
     var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
+    // Main AJAX function to get most of the necessary detials for the website 
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -37,6 +38,7 @@ function searchWeather(city) {
 
         queryURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?appid=" + APIKey + "&lat=" + lat + "&lon=" + lon + "&cnt=5";
 
+        // Second AJAX function to get the UV Index data for the website and color code it based on wikipedia seriousness of UV Index
         $.ajax({
             url: queryURL,
             method: "GET"
@@ -66,6 +68,7 @@ function searchWeather(city) {
 
         queryURL = "http://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + APIKey;
 
+        // Third AJAX function to create the forecast part of the page
         $.ajax({
             url: queryURL,
             method: "GET"
@@ -78,8 +81,8 @@ function searchWeather(city) {
                 $("<h6>").html(moment().add(i + 1, "days").format("M" + "/" + "D" + "/" + "YYYY")).appendTo("#day" + i);
 
                 $("#day" + i).removeClass("d-none");
-                weatherImg = 'https://openweathermap.org/img/wn/' + response.list[i].weather[0].icon + '@2x.png'
 
+                weatherImg = 'https://openweathermap.org/img/wn/' + response.list[i].weather[0].icon + '@2x.png'
                 $("<img>").attr("src", weatherImg).appendTo("#day" + i);
 
                 $("<p>").html("Temp: " + parseFloat(((response.list[i].main.temp) - 273.15) * 1.8 + 32).toFixed(2) + "<span>&deg</span> F").appendTo("#day" + i);
