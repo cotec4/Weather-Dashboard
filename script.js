@@ -36,7 +36,7 @@ function searchWeather(city) {
         var windSpeed = parseFloat(response.wind.speed).toFixed(1);
         $("#windSpeed").html("Current Wind Speed: " + windSpeed + " MPH");
 
-        queryURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?appid=" + APIKey + "&lat=" + lat + "&lon=" + lon + "&cnt=5";
+        queryURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?appid=" + APIKey + "&lat=" + lat + "&lon=" + lon + "&cnt=5";
 
         // Second AJAX function to get the UV Index data for the website and color code it based on wikipedia seriousness of UV Index
         $.ajax({
@@ -66,7 +66,7 @@ function searchWeather(city) {
             }
         })
 
-        queryURL = "http://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + APIKey;
+        queryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + APIKey;
 
         // Third AJAX function to create the forecast part of the page
         $.ajax({
