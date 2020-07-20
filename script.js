@@ -12,7 +12,7 @@ function searchWeather(city) {
         $("#day" + i).empty();
     }
 
-    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial" + "&appid=" + APIKey;
 
     // Main AJAX function to get most of the necessary detials for the website 
     $.ajax({
@@ -27,7 +27,7 @@ function searchWeather(city) {
         var weatherImg = 'https://openweathermap.org/img/wn/' + response.weather[0].icon + '.png';
         $("#city").html(city + " (" + today + ") " + "<img src=" + weatherImg + "> </img>");
 
-        var temp = parseFloat(((response.main.temp) - 273.15) * 1.8 + 32).toFixed(1);
+        var temp = parseFloat(response.main.temp).toFixed(1);
         $("#temp").html("Current Temperature: " + temp + "<span>&deg</span> F");
 
         var humidity = parseInt(response.main.humidity);
@@ -66,32 +66,40 @@ function searchWeather(city) {
             }
         })
 
-        queryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + APIKey;
+        queryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&units=imperial" + "&appid=" + APIKey;
 
         // Third AJAX function to create the forecast part of the page
         $.ajax({
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-
+           
             $("#forecastH5").removeClass("d-none");
 
+
             for (var i = 0; i <= 4; i++) {
+
+                // Have to define r because the response pulls a 5 day forecast but in 3 hour increments 
+                var r = (i + 1) * 7;
 
                 $("<h6>").html(moment().add(i + 1, "days").format("M" + "/" + "D" + "/" + "YYYY")).appendTo("#day" + i);
 
                 $("#day" + i).removeClass("d-none");
 
-                weatherImg = 'https://openweathermap.org/img/wn/' + response.list[i].weather[0].icon + '@2x.png'
-                $("<img>").attr("src", weatherImg).appendTo("#day" + i);
+                weatherImg = 'https://openweathermap.org/img/wn/' + response.list[r].weather[0].icon + '@2x.png'
+                var forecastWeatherImg = $("<img>").attr("src", weatherImg);
 
-                $("<p>").html("Temp: " + parseFloat(((response.list[i].main.temp) - 273.15) * 1.8 + 32).toFixed(2) + "<span>&deg</span> F").appendTo("#day" + i);
+                var forecastTemp = $("<p>").html("Temp: " + parseFloat(response.list[r].main.temp).toFixed(2) + "<span>&deg</span> F");
 
-                $("<p>").html("Humidity: " + parseInt(response.list[i].main.humidity) + "%").appendTo("#day" + i);
+                var forecastHumidity = $("<p>").html("Humidity: " + parseInt(response.list[r].main.humidity) + "%");
+
+                $("#day" + i).append(forecastWeatherImg, forecastTemp, forecastHumidity);
+
             }
         })
     })
 }
+
 
 function renderBtns() {
     for (var i = 0; i < searchHistory.length; i++) {
@@ -129,4 +137,4 @@ $(document).on("click", ".cities", function () {
     searchWeather(city);
 });
 
-initSearch();
+initSearch(); 
