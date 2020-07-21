@@ -1,1 +1,10 @@
 # Weather-Dashboard
+This assignment was to create a website that provided specific weather related results when searching a city. I decided to use Bootstrap as my base HTML and CSS for styling purposes. I then used an OpenWeatherMap API to get data from the OpenWeather server for each city. This search proved to be slightly complicated as I had to do 3 separate AJAX pulls (one for the primary weather data for the city just searched, one for the UV Index and one for the forecast).
+
+The last AJAX pull presented the trickiest logic testing as I have a free OpenWeatherMap account which only provides a 5 day forecast but in 3 hour increments. This makes things a bit tricky as you do not get an average for the day but instead get specific weather data for that hour - it is also tricky to ensure each day in the 5 day forecast is pulling data from that specific data in the AJAX pull.
+
+To solve this, I used a for loop with two different variables with one variable only being used to pull temperature, humidity and icons for the right day (I added 1 to the variable i and then multiplied that by 7 to ensure I was at minmium 21 hours ahead of the current time being pulled).
+
+Finally, I had to ensure when the page loaded, the data from the most recent search was pulled up. To do this, I stored all the cities searched in an array. I then defined the city variable (which is a global variable) as the last element in that stored array then ran that city through the appropriate function when the page loads.
+
+The main goal of this assignment was to work with server side APIs and go through AJAX requests to get data from the servers and present the data on a website. This assignment would have been easier with a paid account on OpenWeatherMap but having only the free account made the logic and thought process more challenigng and thus mor rewarding.
