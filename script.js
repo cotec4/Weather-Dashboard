@@ -73,9 +73,8 @@ function searchWeather(city) {
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-           
-            $("#forecastH5").removeClass("d-none");
 
+            $("#forecastH5").removeClass("d-none");
 
             for (var i = 0; i <= 4; i++) {
 
@@ -94,7 +93,6 @@ function searchWeather(city) {
                 var forecastHumidity = $("<p>").html("Humidity: " + parseInt(response.list[r].main.humidity) + "%");
 
                 $("#day" + i).append(forecastWeatherImg, forecastTemp, forecastHumidity);
-
             }
         })
     })
@@ -133,8 +131,12 @@ $("#searchBtn").on("click", function () {
 
 $(document).on("click", ".cities", function () {
     city = $(this).html();
-
     searchWeather(city);
 });
 
-initSearch(); 
+initSearch();
+
+$(document).ready(function () {
+    city = searchHistory.slice(-1)[0];
+    searchWeather(city);
+})
