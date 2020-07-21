@@ -73,26 +73,30 @@ function searchWeather(city) {
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-
+        
             $("#forecastH5").removeClass("d-none");
+            // Have to define i because the response pulls a 5 day forecast but in 3 hour increments 
+            var i = 0;
 
-            for (var i = 0; i <= 4; i++) {
+            for (var r = 0; r < response.list.length; r++) {
 
-                // Have to define r because the response pulls a 5 day forecast but in 3 hour increments 
-                var r = (i + 1) * 7;
-
-                $("<h6>").html(moment().add(i + 1, "days").format("M" + "/" + "D" + "/" + "YYYY")).appendTo("#day" + i);
-
-                $("#day" + i).removeClass("d-none");
-
-                weatherImg = 'https://openweathermap.org/img/wn/' + response.list[r].weather[0].icon + '@2x.png'
-                var forecastWeatherImg = $("<img>").attr("src", weatherImg);
-
-                var forecastTemp = $("<p>").html("Temp: " + parseFloat(response.list[r].main.temp).toFixed(2) + "<span>&deg</span> F");
-
-                var forecastHumidity = $("<p>").html("Humidity: " + parseInt(response.list[r].main.humidity) + "%");
-
-                $("#day" + i).append(forecastWeatherImg, forecastTemp, forecastHumidity);
+                if (response.list[r].dt_txt.includes("12:00:00")) {
+                    
+                    $("<h6>").html(moment().add(i + 1, "days").format("M" + "/" + "D" + "/" + "YYYY")).appendTo("#day" + i);
+                    
+                    $("#day" + i).removeClass("d-none");
+                    
+                    weatherImg = 'https://openweathermap.org/img/wn/' + response.list[r].weather[0].icon + '@2x.png'
+                    var forecastWeatherImg = $("<img>").attr("src", weatherImg);
+                    
+                    var forecastTemp = $("<p>").html("Temp: " + parseFloat(response.list[r].main.temp).toFixed(2) + "<span>&deg</span> F");
+                    
+                    var forecastHumidity = $("<p>").html("Humidity: " + parseInt(response.list[r].main.humidity) + "%");
+                    
+                    $("#day" + i).append(forecastWeatherImg, forecastTemp, forecastHumidity);
+                    
+                    i++
+                }
             }
         })
     })
