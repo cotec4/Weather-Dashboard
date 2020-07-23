@@ -1,7 +1,7 @@
 // Global variables
 var citySearch = document.getElementById("citySearch"),
     searchHistory = [],
-    today = moment().format("M" + "/" + "D" + "/" + "YYYY"),
+    today = moment().format("l"),
     APIKey = "a908941a600765cd93c1943bfd3be4b7",
     city;
 
@@ -73,7 +73,7 @@ function searchWeather(city) {
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-        
+
             $("#forecastH5").removeClass("d-none");
             // Have to define i because the response pulls a 5 day forecast but in 3 hour increments 
             var i = 0;
@@ -81,20 +81,20 @@ function searchWeather(city) {
             for (var r = 0; r < response.list.length; r++) {
 
                 if (response.list[r].dt_txt.includes("12:00:00")) {
-                    
-                    $("<h6>").html(moment().add(i + 1, "days").format("M" + "/" + "D" + "/" + "YYYY")).appendTo("#day" + i);
-                    
+
+                    $("<h6>").html(moment().add(i + 1, "days").format("l")).appendTo("#day" + i);
+
                     $("#day" + i).removeClass("d-none");
-                    
+
                     weatherImg = 'https://openweathermap.org/img/wn/' + response.list[r].weather[0].icon + '@2x.png'
                     var forecastWeatherImg = $("<img>").attr("src", weatherImg);
-                    
+
                     var forecastTemp = $("<p>").html("Temp: " + parseFloat(response.list[r].main.temp).toFixed(2) + "<span>&deg</span> F");
-                    
+
                     var forecastHumidity = $("<p>").html("Humidity: " + parseInt(response.list[r].main.humidity) + "%");
-                    
+
                     $("#day" + i).append(forecastWeatherImg, forecastTemp, forecastHumidity);
-                    
+
                     i++
                 }
             }
@@ -104,6 +104,7 @@ function searchWeather(city) {
 
 
 function renderBtns() {
+    $("#cityStorage").empty();
     for (var i = 0; i < searchHistory.length; i++) {
         var newCityDiv = $("<div>");
         var newCityBtn = $("<button>").addClass("cities").text(searchHistory[i]).appendTo(newCityDiv);
@@ -123,24 +124,33 @@ function initSearch() {
 
 $("#searchBtn").on("click", function () {
     city = citySearch.value;
-    searchHistory.push(city);
-    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 
-    var newCityDiv = $("<div>");
-    var newCityBtn = $("<button>").addClass("cities").text(city).appendTo(newCityDiv);
-    $("#cityStorage").prepend(newCityBtn);
-
-    searchWeather(city);
+    if (searchHistory.includes(city)) {
+        searchHistory.splice(searchHistory.indexOf(city), 1);
+        searchHistory.push(city);
+        renderBtns();
+        searchWeather(city);
+    }
+    else {
+        searchHistory.push(city);
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        var newCityDiv = $("<div>");
+        var newCityBtn = $("<button>").addClass("cities").text(city).appendTo(newCityDiv);
+        $("#cityStorage").prepend(newCityBtn);
+        searchWeather(city);
+    }
 });
 
 $(document).on("click", ".cities", function () {
     city = $(this).html();
+    searchHistory.splice(searchHistory.indexOf(city), 1);
+    searchHistory.push(city);
+    renderBtns();
     searchWeather(city);
 });
 
-initSearch();
-
 $(document).ready(function () {
+    initSearch();
     city = searchHistory.slice(-1)[0];
     searchWeather(city);
 })
